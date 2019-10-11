@@ -1,6 +1,6 @@
 package lesson1
 
-import org.junit.jupiter.api.Assertions.assertArrayEquals
+import org.junit.jupiter.api.Assertions.*
 import util.PerfResult
 import util.estimate
 import java.io.BufferedWriter
@@ -15,8 +15,8 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         try {
             sortTimes("input/time_in1.txt", "temp.txt")
             assertFileContent(
-                "temp.txt",
-                """
+                    "temp.txt",
+                    """
                      12:40:31 AM
                      07:26:57 AM
                      10:00:03 AM
@@ -31,8 +31,8 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         try {
             sortTimes("input/time_in2.txt", "temp.txt")
             assertFileContent(
-                "temp.txt",
-                """
+                    "temp.txt",
+                    """
                      12:00:00 AM
                 """.trimIndent()
             )
@@ -45,14 +45,37 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         } finally {
             File("temp.txt").delete()
         }
+
+        try {
+            sortTimes("input/time_in4.txt", "temp.txt")
+            assertFileContent(
+                    "temp.txt",
+                    """
+                     01:12:55 PM
+                     01:12:55 PM
+                     01:12:55 PM
+                     01:12:55 PM
+                """.trimIndent()
+            )
+        } finally {
+            File("temp.txt").delete()
+        }
+        try {
+            sortTimes("input/time_in5.txt", "temp.txt")
+            assertTrue(false, "Test failed, exception expected")
+        } catch (e: Exception) {
+            assertTrue(true, "Test passed, expected exception received")
+        } finally {
+            File("temp.txt").delete()
+        }
     }
 
     protected fun sortAddresses(sortAddresses: (String, String) -> Unit) {
         try {
             sortAddresses("input/addr_in1.txt", "temp.txt")
             assertFileContent(
-                "temp.txt",
-                """
+                    "temp.txt",
+                    """
                     Железнодорожная 3 - Петров Иван
                     Железнодорожная 7 - Иванов Алексей, Иванов Михаил
                     Садовая 5 - Сидоров Петр, Сидорова Мария
@@ -104,8 +127,8 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         try {
             sortTemperatures("input/temp_in1.txt", "temp.txt")
             assertFileContent(
-                "temp.txt",
-                """
+                    "temp.txt",
+                    """
                     -98.4
                     -12.6
                     -12.6
@@ -115,6 +138,28 @@ abstract class AbstractTaskTests : AbstractFileTests() {
                     121.3
                 """.trimIndent()
             )
+        } finally {
+            File("temp.txt").delete()
+        }
+        try {
+            sortTemperatures("input/temp_in2.txt", "temp.txt")
+            assertFileContent(
+                    "temp.txt",
+                    """
+                    -98.4
+                    -8.0
+                    0.0
+                    0.0
+                """.trimIndent()
+            )
+        } finally {
+            File("temp.txt").delete()
+        }
+        try {
+            sortTemperatures("input/temp_in3.txt", "temp.txt")
+            assertTrue(false, "Test failed, exception expected")
+        } catch (e: IllegalArgumentException) {
+            assertEquals("Wrong argument", e.message, "Test passed, expected exception received")
         } finally {
             File("temp.txt").delete()
         }
@@ -185,8 +230,8 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         try {
             sortSequence("input/seq_in1.txt", "temp.txt")
             assertFileContent(
-                "temp.txt",
-                """
+                    "temp.txt",
+                    """
                         1
                         3
                         3
@@ -202,8 +247,8 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         try {
             sortSequence("input/seq_in2.txt", "temp.txt")
             assertFileContent(
-                "temp.txt",
-                """
+                    "temp.txt",
+                    """
                         25
                         39
                         25
@@ -221,8 +266,8 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         try {
             sortSequence("input/seq_in3.txt", "temp.txt")
             assertFileContent(
-                "temp.txt",
-                """
+                    "temp.txt",
+                    """
                         25986000
                         39234000
                         25986000
@@ -240,8 +285,8 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         try {
             sortSequence("input/seq_in4.txt", "temp.txt")
             assertFileContent(
-                "temp.txt",
-                """
+                    "temp.txt",
+                    """
                         78
                         32
                         13
@@ -260,8 +305,8 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         try {
             sortSequence("input/seq_in5.txt", "temp.txt")
             assertFileContent(
-                "temp.txt",
-                """
+                    "temp.txt",
+                    """
                         78
                         13
                         45
@@ -299,8 +344,8 @@ abstract class AbstractTaskTests : AbstractFileTests() {
     }
 
     private fun generateArrays(
-        firstSize: Int,
-        secondSize: Int
+            firstSize: Int,
+            secondSize: Int
     ): PerfResult<Triple<Array<Int>, Array<Int?>, Array<Int?>>> {
         val random = Random()
         val expectedResult = Array<Int?>(firstSize + secondSize) {
@@ -317,8 +362,8 @@ abstract class AbstractTaskTests : AbstractFileTests() {
             }
         }
         return PerfResult(
-            size = expectedResult.size,
-            data = Triple(first.toTypedArray(), second.toTypedArray(), expectedResult)
+                size = expectedResult.size,
+                data = Triple(first.toTypedArray(), second.toTypedArray(), expectedResult)
         )
     }
 
@@ -327,9 +372,21 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         mergeArrays(arrayOf(4, 9, 15, 20, 23), result)
         assertArrayEquals(arrayOf(1, 3, 4, 9, 9, 13, 15, 18, 20, 23, 23), result)
 
+        val result1 = arrayOf(null, null, null, 18, 23)
+        mergeArrays(arrayOf(6, 10, 55), result1)
+        assertArrayEquals(arrayOf(6, 10, 18, 23, 55), result1)
+
+        val result2 = arrayOf(null, null, 5, 8, 17, 35)
+        mergeArrays(arrayOf(0, 25), result2)
+        assertArrayEquals(arrayOf(0, 5, 8, 17, 25, 35), result2)
+
+        val result3 = arrayOf(null, null, null, 0.5, 3.9, 5.8 )
+        mergeArrays(arrayOf(0.0, 2.9, 8.1), result3)
+        assertArrayEquals(arrayOf(0.0, 0.5, 2.9, 3.9, 5.8, 8.1), result3)
+
         fun testGeneratedArrays(
-            firstSize: Int,
-            secondSize: Int
+                firstSize: Int,
+                secondSize: Int
         ): PerfResult<Triple<Array<Int>, Array<Int?>, Array<Int?>>> {
             val res = generateArrays(firstSize, secondSize)
             val (first, second, expectedResult) = res.data

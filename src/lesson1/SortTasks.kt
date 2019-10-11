@@ -2,6 +2,10 @@
 
 package lesson1
 
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
+
 /**
  * Сортировка времён
  *
@@ -31,9 +35,34 @@ package lesson1
  * 07:56:14 PM
  *
  * В случае обнаружения неверного формата файла бросить любое исключение.
+ * Трудоемкость: O(n + n + n*log(n)) = O(n*log(n))
+ * Ресурсоемкость: O(n)
  */
 fun sortTimes(inputName: String, outputName: String) {
-    TODO()
+    val inputDate = File(inputName).readLines()
+    val outputDate = File(outputName).bufferedWriter()
+    val result = mutableListOf<Date>()
+
+    val dateFormat = SimpleDateFormat("hh:mm:ss a", Locale.US)
+
+    try {
+        for (line in inputDate) {
+            val date = dateFormat.parse(line)
+            result.add(date)
+        }
+
+        result.sort()
+
+        for (date in result) {
+            outputDate.write(dateFormat.format(date) + "\n")
+        }
+
+        outputDate.close()
+
+    } catch (e: Exception) {
+        throw IllegalArgumentException("Error")
+
+    }
 }
 
 /**
@@ -95,9 +124,33 @@ fun sortAddresses(inputName: String, outputName: String) {
  * 24.7
  * 99.5
  * 121.3
+ * Трудоемкость: O(n + n + n) = O(n)
+ * Ресурсоемкость: O(n + n + n+ n) = O(n)
  */
 fun sortTemperatures(inputName: String, outputName: String) {
-    TODO()
+    val inputTemperatures = File(inputName).readLines()
+    val outputTemperatures = File(outputName).bufferedWriter()
+    val buffer = mutableListOf<Int>()
+
+    val minValue = 2730.0 // This number need for sorting
+
+    for (line in inputTemperatures) {
+        val temp = line.toDouble()
+        if (temp !in -273..500) {
+            throw IllegalArgumentException("Wrong argument")
+        }
+        buffer.add((temp * 10 + minValue).toInt())
+    }
+
+    var bufferArray = buffer.toIntArray()
+
+    bufferArray = countingSort(bufferArray, buffer.max()!!)
+
+    for (temp in bufferArray) {
+        outputTemperatures.write(((temp - minValue) / 10).toString() + "\n")
+    }
+
+    outputTemperatures.close()
 }
 
 /**
@@ -146,8 +199,15 @@ fun sortSequence(inputName: String, outputName: String) {
  * second = [null null null null null 1 3 9 13 18 23]
  *
  * Результат: second = [1 3 4 9 9 13 15 20 23 28]
+ *
+ * Трудоемкость: O(n + n*log(n)) = O(n*log(n))
+ * Ресурсоемкость: O(n)
  */
 fun <T : Comparable<T>> mergeArrays(first: Array<T>, second: Array<T?>) {
-    TODO()
+    for (i in first.indices) {
+        second[i] = first[i]
+    }
+
+    second.sort()
 }
 
