@@ -2,6 +2,10 @@
 
 package lesson2
 
+import java.io.File
+import kotlin.math.sqrt
+
+
 /**
  * Получение наибольшей прибыли (она же -- поиск максимального подмассива)
  * Простая
@@ -25,9 +29,30 @@ package lesson2
  * Например, для приведённого выше файла результат должен быть Pair(3, 4)
  *
  * В случае обнаружения неверного формата файла бросить любое исключение.
+ * Ресурсоемкость: O(n)
+ * Трудоемкость: O(n)
  */
 fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
-    TODO()
+    val input = File(inputName).readLines()
+    val buffer = mutableListOf<Int>()
+    var max = Int.MIN_VALUE
+    var min = 0
+    var result: Pair<Int, Int> = 0 to 0
+
+    for (line in input) buffer.add(line.toInt())
+
+    for (i in 0 until buffer.size) {
+        if (buffer[i] - buffer[min] > max) {
+            max = buffer[i] - buffer[min]
+            result = min + 1 to i + 1
+        }
+
+        if (buffer[i] < buffer[min]) {
+            min = i
+        }
+    }
+
+    return result
 }
 
 /**
@@ -78,9 +103,17 @@ fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
  *
  * Общий комментарий: решение из Википедии для этой задачи принимается,
  * но приветствуется попытка решить её самостоятельно.
+ * Ресурсоемкость: O(n)
+ * Трудоемкость: O(n)
  */
+
 fun josephTask(menNumber: Int, choiceInterval: Int): Int {
-    TODO()
+    var res = 0
+
+    for (i in 1..menNumber)
+        res = (res + choiceInterval) % i
+
+    return res + 1
 }
 
 /**
@@ -93,9 +126,31 @@ fun josephTask(menNumber: Int, choiceInterval: Int): Int {
  * При сравнении подстрок, регистр символов *имеет* значение.
  * Если имеется несколько самых длинных общих подстрок одной длины,
  * вернуть ту из них, которая встречается раньше в строке first.
+ *
+ * Ресурсоемкость: O(n)
+ * Трудоемкость: O(n)
  */
 fun longestCommonSubstring(first: String, second: String): String {
-    TODO()
+    if (first.isEmpty() || second.isEmpty()) return ""
+
+    var max = 0
+    var endNumber = 0
+    val counts = Array(first.length + 1) { IntArray(second.length + 1) }
+
+    for (i in 1..first.length) {
+        for (j in 1..second.length) {
+            if (first[i - 1] == second[j - 1]) {
+                counts[i][j] = counts[i - 1][j - 1] + 1
+            }
+
+            if (counts[i][j] > max) {
+                endNumber = i
+                max = counts[i][j]
+            }
+        }
+    }
+
+    return first.substring(endNumber - max, endNumber)
 }
 
 /**
@@ -107,10 +162,28 @@ fun longestCommonSubstring(first: String, second: String): String {
  *
  * Справка: простым считается число, которое делится нацело только на 1 и на себя.
  * Единица простым числом не считается.
+ *
+ * Трудоемкость: O(n * n)
+ * Ресурсоемкость: O(n)
  */
 fun calcPrimesNumber(limit: Int): Int {
-    TODO()
+    var result = 1
+    if (limit <= 1) return 0
+
+    for (i in 3..limit step 2) {
+        var isPrime = true
+        for (j in 3..sqrt(i.toDouble()).toInt() step 2) {
+            if (i % j == 0) {
+                isPrime = false
+                break
+            }
+        }
+        if (isPrime) ++result
+    }
+
+    return result
 }
+
 
 /**
  * Балда

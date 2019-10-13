@@ -125,7 +125,7 @@ fun sortAddresses(inputName: String, outputName: String) {
  * 99.5
  * 121.3
  * Трудоемкость: O(n + n + n) = O(n)
- * Ресурсоемкость: O(n + n + n+ n) = O(n)
+ * Ресурсоемкость: O(n + n + n + n) = O(n)
  */
 fun sortTemperatures(inputName: String, outputName: String) {
     val inputTemperatures = File(inputName).readLines()
@@ -136,9 +136,7 @@ fun sortTemperatures(inputName: String, outputName: String) {
 
     for (line in inputTemperatures) {
         val temp = line.toDouble()
-        if (temp !in -273..500) {
-            throw IllegalArgumentException("Wrong argument")
-        }
+        require(temp in -273..500) { "Wrong argument" }
         buffer.add((temp * 10 + minValue).toInt())
     }
 
@@ -181,9 +179,39 @@ fun sortTemperatures(inputName: String, outputName: String) {
  * 2
  * 2
  * 2
+ *
+ * Ресурсоемкость - O(n)
+ * Трудоемкость - O(n)
  */
 fun sortSequence(inputName: String, outputName: String) {
-    TODO()
+    val inputNumbers = File(inputName).readLines()
+    val outputNumbers = File(outputName).bufferedWriter()
+    val count = mutableMapOf<Int, Int>()
+    var maxCount = Int.MIN_VALUE
+    var min = Int.MIN_VALUE // Min Value
+
+    for (line in inputNumbers) count[line.toInt()] = count.getOrDefault(line.toInt(), 0) + 1
+
+    for ((key, value) in count) {
+        if (value > maxCount || (key < min && value == maxCount)) {
+            min = key
+            maxCount = value
+        }
+    }
+
+    for (line in inputNumbers) {
+        if (line.toInt() != min) {
+            outputNumbers.write(line)
+            outputNumbers.newLine()
+        }
+    }
+
+    for (i in 0 until maxCount) {
+        outputNumbers.write(min.toString())
+        outputNumbers.newLine()
+    }
+
+    outputNumbers.close()
 }
 
 /**
