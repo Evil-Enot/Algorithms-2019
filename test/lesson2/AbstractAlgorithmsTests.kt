@@ -46,6 +46,8 @@ abstract class AbstractAlgorithmsTests {
         assertEquals(3 to 4, optimizeBuyAndSell("input/buysell_in1.txt"))
         assertEquals(8 to 12, optimizeBuyAndSell("input/buysell_in2.txt"))
         assertEquals(3 to 4, optimizeBuyAndSell("input/buysell_in3.txt"))
+        assertEquals(5 to 8, optimizeBuyAndSell("input/buysell_in4.txt"))
+        assertEquals(12 to 14, optimizeBuyAndSell("input/buysell_in5.txt"))
         try {
             val expectedAnswer = generatePrices(1000)
             assertEquals(expectedAnswer, optimizeBuyAndSell("temp_prices.txt"))
@@ -65,6 +67,8 @@ abstract class AbstractAlgorithmsTests {
         assertEquals(2, josephTask(2, 1))
         assertEquals(50000000, josephTask(50000000, 1))
         assertEquals(3, josephTask(8, 5))
+        assertEquals(5, josephTask(10, 2))
+        assertEquals(11, josephTask(13, 2))
         assertEquals(28, josephTask(40, 3))
         var menNumber = 2
         for (i in 1..20) {
@@ -77,6 +81,8 @@ abstract class AbstractAlgorithmsTests {
         assertEquals("", longestCommonSubstring("мой мир", "я"))
         assertEquals("зд", longestCommonSubstring("здравствуй мир", "мы здесь"))
         assertEquals("СЕРВАТОР", longestCommonSubstring("ОБСЕРВАТОРИЯ", "КОНСЕРВАТОРЫ"))
+        assertEquals("оматиз", longestCommonSubstring("автоматизировать", "ароматизатор"))
+        assertEquals("имальный", longestCommonSubstring("максимальный", "минимальный"))
         assertEquals(
             "огда ", longestCommonSubstring(
                 """
@@ -129,6 +135,8 @@ abstract class AbstractAlgorithmsTests {
         assertEquals(2, calcPrimesNumber(4))
         assertEquals(4, calcPrimesNumber(10))
         assertEquals(8, calcPrimesNumber(20))
+        assertEquals(15, calcPrimesNumber(50))
+        assertEquals(62, calcPrimesNumber(300))
         assertEquals(1000, calcPrimesNumber(7920))
         assertEquals(1229, calcPrimesNumber(10000))
         assertEquals(2262, calcPrimesNumber(20000))
