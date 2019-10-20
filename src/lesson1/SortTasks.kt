@@ -1,4 +1,4 @@
-@file:Suppress("UNUSED_PARAMETER")
+@file:Suppress("UNUSED_PARAMETER", "DEPRECATION")
 
 package lesson1
 
@@ -40,12 +40,11 @@ import java.util.*
  */
 fun sortTimes(inputName: String, outputName: String) {
     val inputDate = File(inputName).readLines()
-    val outputDate = File(outputName).bufferedWriter()
-    val result = mutableListOf<Date>()
 
-    val dateFormat = SimpleDateFormat("hh:mm:ss a", Locale.US)
+    File(outputName).bufferedWriter().use { writer ->
+        val result = mutableListOf<Date>()
+        val dateFormat = SimpleDateFormat("hh:mm:ss a", Locale.US)
 
-    try {
         for (line in inputDate) {
             val date = dateFormat.parse(line)
             result.add(date)
@@ -54,14 +53,10 @@ fun sortTimes(inputName: String, outputName: String) {
         result.sort()
 
         for (date in result) {
-            outputDate.write(dateFormat.format(date) + "\n")
+            writer.write(dateFormat.format(date) + "\n")
         }
 
-        outputDate.close()
-
-    } catch (e: Exception) {
-        throw IllegalArgumentException("Error")
-
+        writer.close()
     }
 }
 
@@ -124,31 +119,33 @@ fun sortAddresses(inputName: String, outputName: String) {
  * 24.7
  * 99.5
  * 121.3
- * Трудоемкость: O(n + n + n) = O(n)
- * Ресурсоемкость: O(n + n + n + n) = O(n)
+ * Трудоемкость: O(n + n) = O(n)
+ * Ресурсоемкость: O(n)
  */
 fun sortTemperatures(inputName: String, outputName: String) {
     val inputTemperatures = File(inputName).readLines()
-    val outputTemperatures = File(outputName).bufferedWriter()
-    val buffer = mutableListOf<Int>()
+    File(outputName).bufferedWriter().use { writer ->
+        val minValue = 2730 // This number need for sorting
+        val count = IntArray(minValue + 5001)
 
-    val minValue = 2730.0 // This number need for sorting
+        for (line in inputTemperatures) {
+            val temp = line.toDouble()
+            require(!(temp !in -273..500 && !Regex("""-?[0-9]{0,3}\.\d""").matches(line))) { "Wrong argument" }
+            count[line.replace(".", "").toInt() + minValue]++
+        }
 
-    for (line in inputTemperatures) {
-        val temp = line.toDouble()
-        require(temp in -273..500) { "Wrong argument" }
-        buffer.add((temp * 10 + minValue).toInt())
+        for (i in 0 until minValue + 5001) {
+            val buffer = i - minValue
+
+            while (count[i] > 0) {
+                if (buffer < 0) writer.write("-")
+                writer.write(kotlin.math.abs(buffer / 10).toString() + "." + kotlin.math.abs(buffer % 10).toString() + "\n")
+                count[i]--
+            }
+        }
+
+        writer.close()
     }
-
-    var bufferArray = buffer.toIntArray()
-
-    bufferArray = countingSort(bufferArray, buffer.max()!!)
-
-    for (temp in bufferArray) {
-        outputTemperatures.write(((temp - minValue) / 10).toString() + "\n")
-    }
-
-    outputTemperatures.close()
 }
 
 /**
@@ -185,33 +182,36 @@ fun sortTemperatures(inputName: String, outputName: String) {
  */
 fun sortSequence(inputName: String, outputName: String) {
     val inputNumbers = File(inputName).readLines()
-    val outputNumbers = File(outputName).bufferedWriter()
-    val count = mutableMapOf<Int, Int>()
-    var maxCount = Int.MIN_VALUE
-    var min = Int.MIN_VALUE // Min Value
+    File(outputName).bufferedWriter().use { writer ->
+        val count = mutableMapOf<Int, Int>()
+        var maxCount = Int.MIN_VALUE
+        var min = Int.MIN_VALUE // Min Value
 
-    for (line in inputNumbers) count[line.toInt()] = count.getOrDefault(line.toInt(), 0) + 1
+        for (line in inputNumbers) count[line.toInt()] = count.getOrDefault(line.toInt(), 0) + 1
 
-    for ((key, value) in count) {
-        if (value > maxCount || (key < min && value == maxCount)) {
-            min = key
-            maxCount = value
+        for ((key, value) in count) {
+            if (value > maxCount || (key < min && value == maxCount)) {
+                min = key
+                maxCount = value
+            }
         }
-    }
 
-    for (line in inputNumbers) {
-        if (line.toInt() != min) {
-            outputNumbers.write(line)
-            outputNumbers.newLine()
+        for (line in inputNumbers) {
+            if (line.toInt() != min) {
+                writer.run {
+                    write(line)
+                    newLine()
+                }
+            }
         }
-    }
 
-    for (i in 0 until maxCount) {
-        outputNumbers.write(min.toString())
-        outputNumbers.newLine()
-    }
+        for (i in 0 until maxCount) {
+            writer.write(min.toString())
+            writer.newLine()
+        }
 
-    outputNumbers.close()
+        writer.close()
+    }
 }
 
 /**
@@ -228,14 +228,19 @@ fun sortSequence(inputName: String, outputName: String) {
  *
  * Результат: second = [1 3 4 9 9 13 15 20 23 28]
  *
- * Трудоемкость: O(n + n*log(n)) = O(n*log(n))
- * Ресурсоемкость: O(n)
+ * Трудоемкость: O(n), n- длина второго массива
+ * Ресурсоемкость: O(1)
  */
 fun <T : Comparable<T>> mergeArrays(first: Array<T>, second: Array<T?>) {
-    for (i in first.indices) {
-        second[i] = first[i]
-    }
+    var firstIndex = 0
+    var secondIndex = first.size
 
-    second.sort()
+    for (i in second.indices) {
+        if (firstIndex < first.size && (secondIndex == second.size || first[firstIndex] <= second[secondIndex]!!)) {
+            second[i] = first[firstIndex++]
+        } else {
+            second[i] = second[secondIndex++]
+        }
+    }
 }
 

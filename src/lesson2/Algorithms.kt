@@ -3,7 +3,6 @@
 package lesson2
 
 import java.io.File
-import kotlin.math.sqrt
 
 
 /**
@@ -37,7 +36,7 @@ fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
     val buffer = mutableListOf<Int>()
     var max = Int.MIN_VALUE
     var min = 0
-    var result: Pair<Int, Int> = 0 to 0
+    var result = 0 to 0
 
     for (line in input) buffer.add(line.toInt())
 
@@ -103,8 +102,8 @@ fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
  *
  * Общий комментарий: решение из Википедии для этой задачи принимается,
  * но приветствуется попытка решить её самостоятельно.
- * Ресурсоемкость: O(n)
- * Трудоемкость: O(n)
+ * Ресурсоемкость: O(1)
+ * Трудоемкость: O(n), n-menNumber
  */
 
 fun josephTask(menNumber: Int, choiceInterval: Int): Int {
@@ -127,8 +126,8 @@ fun josephTask(menNumber: Int, choiceInterval: Int): Int {
  * Если имеется несколько самых длинных общих подстрок одной длины,
  * вернуть ту из них, которая встречается раньше в строке first.
  *
- * Ресурсоемкость: O(n)
- * Трудоемкость: O(n)
+ * Ресурсоемкость: O(n*m), где n - first.length ,m - second.length
+ * Трудоемкость: O(n*m), где n - first.length ,m - second.length
  */
 fun longestCommonSubstring(first: String, second: String): String {
     if (first.isEmpty() || second.isEmpty()) return ""
@@ -163,24 +162,25 @@ fun longestCommonSubstring(first: String, second: String): String {
  * Справка: простым считается число, которое делится нацело только на 1 и на себя.
  * Единица простым числом не считается.
  *
- * Трудоемкость: O(n * n)
+ * Трудоемкость: O(n * log(log(n)))
  * Ресурсоемкость: O(n)
  */
 fun calcPrimesNumber(limit: Int): Int {
-    var result = 1
-    if (limit <= 1) return 0
+    var result = 0
+    val prime = BooleanArray(limit + 1) { true }
 
-    for (i in 3..limit step 2) {
-        var isPrime = true
-        for (j in 3..sqrt(i.toDouble()).toInt() step 2) {
-            if (i % j == 0) {
-                isPrime = false
-                break
+    for (i in 2 until prime.size) {
+        if (prime[i]) {
+            var j = 2
+            while (i * j < prime.size) {
+                prime[i * j] = false
+                ++j
             }
         }
-        if (isPrime) ++result
     }
 
+    for (i in 2 until prime.size)
+        if (prime[i]) result++
     return result
 }
 
