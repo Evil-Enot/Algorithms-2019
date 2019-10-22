@@ -5,6 +5,7 @@ package lesson1
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.abs
 
 /**
  * Сортировка времён
@@ -120,15 +121,14 @@ fun sortAddresses(inputName: String, outputName: String) {
  * 99.5
  * 121.3
  * Трудоемкость: O(n + n) = O(n)
- * Ресурсоемкость: O(n)
+ * Ресурсоемкость: O(1)
  */
 fun sortTemperatures(inputName: String, outputName: String) {
-    val inputTemperatures = File(inputName).readLines()
     File(outputName).bufferedWriter().use { writer ->
         val minValue = 2730 // This number need for sorting
         val count = IntArray(minValue + 5001)
 
-        for (line in inputTemperatures) {
+        for (line in File(inputName).readLines()) {
             val temp = line.toDouble()
             require(!(temp !in -273..500 && !Regex("""-?[0-9]{0,3}\.\d""").matches(line))) { "Wrong argument" }
             count[line.replace(".", "").toInt() + minValue]++
@@ -139,14 +139,17 @@ fun sortTemperatures(inputName: String, outputName: String) {
 
             while (count[i] > 0) {
                 if (buffer < 0) writer.write("-")
-                writer.write(kotlin.math.abs(buffer / 10).toString() + "." + kotlin.math.abs(buffer % 10).toString() + "\n")
+                writer.write(abs(buffer / 10).toString() + "." + abs(buffer % 10).toString() + "\n")
                 count[i]--
             }
+
+            readLine()
         }
 
         writer.close()
     }
 }
+
 
 /**
  * Сортировка последовательности
