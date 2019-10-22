@@ -142,8 +142,6 @@ fun sortTemperatures(inputName: String, outputName: String) {
                 writer.write(abs(buffer / 10).toString() + "." + abs(buffer % 10).toString() + "\n")
                 count[i]--
             }
-
-            readLine()
         }
 
         writer.close()
