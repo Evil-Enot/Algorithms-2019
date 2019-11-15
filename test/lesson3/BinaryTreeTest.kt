@@ -1,11 +1,8 @@
 package lesson3
 
 import org.junit.jupiter.api.Tag
-import kotlin.test.Test
 import java.util.*
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class BinaryTreeTest {
     private fun testAdd(create: () -> CheckableSortedSet<Int>) {
@@ -72,14 +69,14 @@ class BinaryTreeTest {
             for (element in list) {
                 val inn = element != toRemove
                 assertEquals(
-                    inn, element in binarySet,
-                    "$element should be ${if (inn) "in" else "not in"} tree"
+                        inn, element in binarySet,
+                        "$element should be ${if (inn) "in" else "not in"} tree"
                 )
             }
             assertTrue(binarySet.checkInvariant(), "Binary tree invariant is false after tree.remove()")
             assertTrue(
-                binarySet.height() <= originalHeight,
-                "After removal of $toRemove from $list binary tree height increased"
+                    binarySet.height() <= originalHeight,
+                    "After removal of $toRemove from $list binary tree height increased"
             )
         }
     }
@@ -97,6 +94,11 @@ class BinaryTreeTest {
     }
 
     private fun testIterator(create: () -> CheckableSortedSet<Int>) {
+        val set = create()
+        val iterator = set.iterator()
+
+        assertFailsWith<NoSuchElementException> { iterator.next() }
+
         val random = Random()
         for (iteration in 1..100) {
             val list = mutableListOf<Int>()
@@ -122,8 +124,8 @@ class BinaryTreeTest {
             // hasNext call should not affect iterator position
             while (iterator1.hasNext()) {
                 assertEquals(
-                    iterator2.next(), iterator1.next(),
-                    "Call of iterator.hasNext() changes its state while iterating $treeSet"
+                        iterator2.next(), iterator1.next(),
+                        "Call of iterator.hasNext() changes its state while iterating $treeSet"
                 )
             }
         }
@@ -168,9 +170,9 @@ class BinaryTreeTest {
                 }
             }
             assertEquals(
-                0, counter,
-                "Iterator.remove() of $toRemove from $list changed iterator position: " +
-                        "we've traversed a total of ${binarySet.size - counter} elements instead of ${binarySet.size}"
+                    0, counter,
+                    "Iterator.remove() of $toRemove from $list changed iterator position: " +
+                            "we've traversed a total of ${binarySet.size - counter} elements instead of ${binarySet.size}"
             )
             println()
             assertEquals<SortedSet<*>>(treeSet, binarySet, "After removal of $toRemove from $list")
@@ -178,8 +180,8 @@ class BinaryTreeTest {
             for (element in list) {
                 val inn = element != toRemove
                 assertEquals(
-                    inn, element in binarySet,
-                    "$element should be ${if (inn) "in" else "not in"} tree"
+                        inn, element in binarySet,
+                        "$element should be ${if (inn) "in" else "not in"} tree"
                 )
             }
             assertTrue(binarySet.checkInvariant(), "Binary tree invariant is false after tree.iterator().remove()")
