@@ -49,6 +49,8 @@ class BinaryTreeTest {
     private fun <T : Comparable<T>> createKotlinTree(): CheckableSortedSet<T> = KtBinaryTree()
 
     private fun testRemove(create: () -> CheckableSortedSet<Int>) {
+        val tree = create()
+
         val random = Random()
         for (iteration in 1..100) {
             val list = mutableListOf<Int>()
@@ -79,6 +81,17 @@ class BinaryTreeTest {
                     "After removal of $toRemove from $list binary tree height increased"
             )
         }
+
+        tree.add(655)
+        assertTrue(tree.remove(655))
+
+        tree.add(2)
+        tree.add(6)
+        assertTrue(tree.remove(2))
+
+        tree.add(57)
+        assertTrue(tree.remove(57))
+        assertFalse(tree.remove(57))
     }
 
     @Test
