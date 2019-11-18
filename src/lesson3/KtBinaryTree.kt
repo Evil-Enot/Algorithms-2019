@@ -5,12 +5,11 @@ import kotlin.NoSuchElementException
 import kotlin.math.max
 
 // Attention: comparable supported but comparator is not
-class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSortedSet<T> {
+open class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSortedSet<T> {
 
     private var root: Node<T>? = null
 
     override var size = 0
-        private set
 
     private class Node<T>(var value: T) {
 
@@ -62,7 +61,7 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
      * Удаление элемента в дереве
      * Средняя
      *
-     * Трудоемкость - O(h)
+     * Трудоемкость - O(n)
      * Ресурсоемкость - O(1)
      */
     override fun remove(element: T): Boolean {
@@ -173,7 +172,7 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
          * Сложная
          *
          * *
-         * Трудоемкость - O(h)
+         * Трудоемкость - O(n)
          * Ресурсоемкость - O(1)
          */
         override fun remove() {
@@ -185,67 +184,85 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
 
     override fun comparator(): Comparator<in T>? = null
 
+    inner class BinarySubTree<T : Comparable<T>> internal constructor(private val start: T?, private val end: T?, private val tree: KtBinaryTree<T>) : KtBinaryTree<T>() {
+
+        override var size: Int = 0
+            get() {
+                return findSize(tree.root)
+            }
+
+        /**
+         * Трудоёмкость: O(n)
+         * Ресурсоёмкость: O(1)
+         */
+        override fun contains(element: T): Boolean = tree.contains(element) && inRange(element)
+
+        /**
+         * Трудоёмкость: O(n)
+         * Ресурсоёмкость: O(1)
+         */
+
+        private fun inRange(element: T): Boolean = (start == null || element >= start) && (end == null || element < end)
+
+        /**
+         * Трудоёмкость: O(n)
+         * Ресурсоёмкость: O(1)
+         */
+
+        override fun add(element: T): Boolean {
+            require(inRange(element))
+
+            return tree.add(element)
+        }
+
+        /**
+         * Трудоёмкость: O(1)
+         * Ресурсоёмкость: O(n)
+         */
+
+        private fun findSize(node: Node<T>?): Int {
+            var size = 0
+
+            return when {
+                node != null -> {
+                    if (inRange(node.value)) size++
+
+                    size += findSize(node.left)
+                    size += findSize(node.right)
+
+                    size
+                }
+                else -> size
+            }
+        }
+    }
+
     /**
      * Найти множество всех элементов в диапазоне [fromElement, toElement)
      * Очень сложная
+     *
+     * Трудоёмкость: O(1)
+     * Ресурсоёмкость: O(1)
      */
-    override fun subSet(fromElement: T, toElement: T): SortedSet<T> {
-        TODO()
-    }
+    override fun subSet(fromElement: T, toElement: T): SortedSet<T> = BinarySubTree(fromElement, toElement, this)
 
     /**
      * Найти множество всех элементов меньше заданного
      * Сложная
      *
-     *  Трудоёмкость: O(n)
-     * Ресурсоёмкость: O(n)
+     * Трудоёмкость: O(1)
+     * Ресурсоёмкость: O(1)
      */
-    override fun headSet(toElement: T): SortedSet<T> {
-        val sortedSet = TreeSet<T>()
-
-        return hSet(root, last(), sortedSet).headSet(toElement)
-    }
-
-    private fun hSet(root: Node<T>?, toElement: T, sortedSet: SortedSet<T>): SortedSet<T> {
-        if (root == null) return sortedSet
-
-        val comparison = toElement.compareTo(root.value)
-
-        if (comparison >= 0) {
-            sortedSet.add(root.value)
-            hSet(root.left, toElement, sortedSet)
-            hSet(root.right, toElement, sortedSet)
-        }
-
-        return sortedSet
-    }
+    override fun headSet(toElement: T): SortedSet<T> = BinarySubTree(null, toElement, this)
 
     /**
      * Найти множество всех элементов больше или равных заданного
      * Сложная
      *
-     *  Трудоёмкость: O(n)
-     * Ресурсоёмкость: O(n)
+     * Трудоёмкость: O(1)
+     * Ресурсоёмкость: O(1)
      */
-    override fun tailSet(fromElement: T): SortedSet<T> {
-        val sortedSet = TreeSet<T>()
-
-        return tSet(root, first(), sortedSet).tailSet(fromElement)
-    }
-
-    private fun tSet(root: Node<T>?, fromElement: T, sortedSet: SortedSet<T>): SortedSet<T> {
-        if (root == null) return sortedSet
-
-        val comparison = fromElement.compareTo(root.value)
-
-        if (comparison <= 0) {
-            sortedSet.add(root.value)
-            tSet(root.left, fromElement, sortedSet)
-            tSet(root.right, fromElement, sortedSet)
-        }
-
-        return sortedSet
-    }
+    override fun tailSet(fromElement: T): SortedSet<T> = BinarySubTree(fromElement, null, this)
 
     override fun first(): T {
         var current: Node<T> = root ?: throw NoSuchElementException()
@@ -262,4 +279,5 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
         }
         return current.value
     }
+
 }
