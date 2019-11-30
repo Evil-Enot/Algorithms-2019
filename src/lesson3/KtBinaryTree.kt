@@ -61,7 +61,7 @@ open class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableS
      * Удаление элемента в дереве
      * Средняя
      *
-     * Трудоемкость - O(n)
+     * Трудоемкость - O(n), n-количество элементов в дереве
      * Ресурсоемкость - O(1)
      */
     override fun remove(element: T): Boolean {
@@ -122,7 +122,6 @@ open class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableS
     inner class BinaryTreeIterator internal constructor() : MutableIterator<T> {
 
         private var stack: Stack<Node<T>> = Stack()
-        private var current: Node<T>? = null
 
         init {
             var node = root
@@ -176,7 +175,7 @@ open class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableS
          * Ресурсоемкость - O(1)
          */
         override fun remove() {
-            if (current != null) remove(current!!.value)
+            TODO()
         }
     }
 
