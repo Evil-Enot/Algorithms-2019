@@ -11,16 +11,16 @@ abstract class AbstractDynamicTests {
         assertEquals("emt ole", longestCommonSubSequence("nematode knowledge", "empty bottle"))
         val expectedLength = "e kerwelkkd r".length
         assertEquals(
-            expectedLength, longestCommonSubSequence(
+                expectedLength, longestCommonSubSequence(
                 "oiweijgw kejrhwejelkrw kjhdkfjs hrk",
                 "perhkhk lerkerorwetp lkjklvvd durltr"
-            ).length, "Answer must have length of $expectedLength, e.g. 'e kerwelkkd r' or 'erhlkrw kjk r'"
+        ).length, "Answer must have length of $expectedLength, e.g. 'e kerwelkkd r' or 'erhlkrw kjk r'"
         )
         val expectedLength2 = """ дд саы чтых,
 евшнео ваа се сви дн.
         """.trimIndent().length
         assertEquals(
-            expectedLength2, longestCommonSubSequence(
+                expectedLength2, longestCommonSubSequence(
                 """
 Мой дядя самых честных правил,
 Когда не в шутку занемог,
@@ -33,8 +33,18 @@ abstract class AbstractDynamicTests {
 Всевышней волею Зевеса
 Наследник всех своих родных.
                 """.trimIndent()
-            ).length, "Answer must have length of $expectedLength2"
+        ).length, "Answer must have length of $expectedLength2"
         )
+        assertEquals(
+                "сп      песню ООО ЛЮБВИИИИ",
+                longestCommonSubSequence("не спеть  ли     песню  ООО ЛЮБВИИИИ", "спою ка    я песню ООО   ЛЮБВИИИИИИИ ")
+        )
+        assertEquals(
+                "этобылаотсылканаЧижиК",
+                longestCommonSubSequence("этобылаотсылканаЧижиКО", "это была  отсылочка на  Чиж и Ко")
+        )
+        assertEquals("7 +  = 13", longestCommonSubSequence("578 + 455 = 1033", "7 + 6 = 13"))
+        assertEquals(" = ,112", longestCommonSubSequence("pi = 3,1415926", "e = 2,71828182"))
     }
 
     fun longestIncreasingSubSequence(longestIncreasingSubSequence: (List<Int>) -> List<Int>) {
@@ -43,18 +53,22 @@ abstract class AbstractDynamicTests {
         assertEquals(listOf(1, 2), longestIncreasingSubSequence(listOf(1, 2)))
         assertEquals(listOf(2), longestIncreasingSubSequence(listOf(2, 1)))
         assertEquals(
-            listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
-            longestIncreasingSubSequence(listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+                listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+                longestIncreasingSubSequence(listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
         )
         assertEquals(listOf(2, 8, 9, 12), longestIncreasingSubSequence(listOf(2, 8, 5, 9, 12, 6)))
         assertEquals(
-            listOf(23, 34, 56, 87, 91, 98, 140, 349), longestIncreasingSubSequence(
+                listOf(23, 34, 56, 87, 91, 98, 140, 349), longestIncreasingSubSequence(
                 listOf(
-                    23, 76, 34, 93, 123, 21, 56, 87, 91, 12, 45, 98, 140, 12, 5, 38, 349, 65, 94,
-                    45, 76, 15, 99, 100, 88, 84, 35, 88
+                        23, 76, 34, 93, 123, 21, 56, 87, 91, 12, 45, 98, 140, 12, 5, 38, 349, 65, 94,
+                        45, 76, 15, 99, 100, 88, 84, 35, 88
                 )
-            )
         )
+        )
+        assertEquals(listOf(1, 2, 3), longestIncreasingSubSequence(listOf(1, 2, 1, 2, 1, 2, 1, 3)))
+        assertEquals(listOf(1, 2, 15, 23, 24, 30), longestIncreasingSubSequence(listOf(1, 2, 15, 23, 22, 24, 23, 5, 30)))
+        assertEquals(listOf(10), longestIncreasingSubSequence(listOf(10, 8, 6, 4)))
+        assertEquals(listOf(-1, 0, 2), longestIncreasingSubSequence(listOf(-1, -3, -5, 0, -7, 2)))
     }
 
     fun shortestPathOnField(shortestPathOnField: (String) -> Int) {

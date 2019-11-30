@@ -13,9 +13,36 @@ package lesson6
  * Если общей подпоследовательности нет, вернуть пустую строку.
  * Если есть несколько самых длинных общих подпоследовательностей, вернуть любую из них.
  * При сравнении подстрок, регистр символов *имеет* значение.
+ *
+ *
+ * Трудоемкость: О(m + n)
+ * Ресурсоемкость: O(m + n)
+ * где m - длина первой строки и n - длина второй строки
  */
 fun longestCommonSubSequence(first: String, second: String): String {
-    TODO()
+    var result = ""
+    val max = Array(first.length + 1) { IntArray(second.length + 1) }
+    var f = first.length
+    var s = second.length
+
+    for (i in 1 until max.size) {
+        for (j in 1 until max[i].size) {
+            if (first[i - 1] == second[j - 1]) max[i][j] = 1 + max[i - 1][j - 1]
+            else max[i][j] = max[i - 1][j].coerceAtLeast(max[i][j - 1])
+        }
+    }
+
+    while (f > 0 && s > 0) when {
+        first[f - 1] == second[s - 1] -> {
+            result = first[f - 1] + result
+            f--
+            s--
+        }
+        max[f][s] == max[f - 1][s] -> f--
+        else -> s--
+    }
+
+    return result
 }
 
 /**
@@ -29,9 +56,42 @@ fun longestCommonSubSequence(first: String, second: String): String {
  * Если самых длинных возрастающих подпоследовательностей несколько (как в примере),
  * то вернуть ту, в которой числа расположены раньше (приоритет имеют первые числа).
  * В примере ответами являются 2, 8, 9, 12 или 2, 5, 9, 12 -- выбираем первую из них.
+ *
+ * Трудоемкость: O(n ^ n)
+ * Ресурсоемкость: O(n)
  */
 fun longestIncreasingSubSequence(list: List<Int>): List<Int> {
-    TODO()
+    val result = mutableListOf<Int>()
+    if (list.isEmpty()) return result
+
+    var leng = 0
+    var pos = 0
+
+    val index = IntArray(list.size) { -1 }
+    val length = IntArray(list.size)
+
+    for (i in list.indices) {
+        for (j in 0 until i) {
+            if (list[i] > list[j] && length[i] < length[j] + 1) {
+                index[i] = j
+                length[i] = length[j] + 1
+            }
+        }
+    }
+
+    for (i in length.indices) {
+        if (length[i] > leng) {
+            leng = length[i]
+            pos = i
+        }
+    }
+
+    while (pos != -1) {
+        result.add(0, list[pos])
+        pos = index[pos]
+    }
+
+    return result
 }
 
 /**
