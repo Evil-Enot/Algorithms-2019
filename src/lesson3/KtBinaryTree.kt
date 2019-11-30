@@ -170,9 +170,6 @@ open class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableS
          * Удаление следующего элемента
          * Сложная
          *
-         * *
-         * Трудоемкость - O(n)
-         * Ресурсоемкость - O(1)
          */
         override fun remove() {
             TODO()
